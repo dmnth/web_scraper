@@ -19,12 +19,7 @@ class VesselSpider(scrapy.Spider):
             imo_pattern = re.compile('(?<=IMO-)[0-9]+')
             msi_pattern = re.compile('(?<=MSI-)[0-9]+')
             imo = imo_pattern.search(link)
-            msi = imo_pattern.search(link)
-            '''
-            vessel_link = response.urljoin(link)
-            if vessel_link is not None:
-                yield response.follow(vessel_link, callback=self.parse_imo)
-            '''
+            msi = msi_pattern.search(link)
             result = {
                     'name': vessel_name,
                     'type': vessel_type,
@@ -35,12 +30,7 @@ class VesselSpider(scrapy.Spider):
                     }
             yield result 
 
-    def parse_imo(self, response):
-        def extract_imo(query):
-            result = response.css(query).get().split('/')[0].rstrip()
-            if result:
-                return result
-
-        yield {
-                'imo': extract_imo('td.v3.v3np::text'),
-                }
+        next_page = response.css('nav a.pagination-next::attr(href)').get() 
+        if next_page is not None:
+            next_page = response.urljoin(next_page)
+            yield scrapy.Request(next_page, callback=self.parse)
