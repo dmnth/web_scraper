@@ -9,16 +9,17 @@ class VesselSpider(scrapy.Spider):
     start_urls = ['https://www.vesselfinder.com/vessels']
 
     def parse(self, response):
-        for vessel in response.css('tr'):
+        vessels = response.css('tbody')
+        for vessel in vessels.css('tr'):
             vessel_name = vessel.css('div.slna::text').get()
             vessel_type = vessel.css('div.slty::text').get()
             year_built = vessel.css('td.v3::text').get()
             size = vessel.css('td.v6::text').get()
-            link = vessel.css('td a.ship-link::attr(href)').get()
-            imo_pattern = re.compile('(?<=IMO-)[0-9]+)')
-            msi_pattern = re.compile('(?<MSI-)[0-9]+)')
-            imo = pattern.search(link)
-            msi = pattern.search(link)
+            link = vessel.css('tr td.v2 a.ship-link::attr(href)').get()
+            imo_pattern = re.compile('(?<=IMO-)[0-9]+')
+            msi_pattern = re.compile('(?<=MSI-)[0-9]+')
+            imo = imo_pattern.search(link)
+            msi = imo_pattern.search(link)
             '''
             vessel_link = response.urljoin(link)
             if vessel_link is not None:
