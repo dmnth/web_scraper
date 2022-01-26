@@ -12,8 +12,8 @@ BOT_NAME = 'vessels'
 SPIDER_MODULES = ['vessels.spiders']
 NEWSPIDER_MODULE = 'vessels.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
+
 USER_AGENT ="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36"
 
 # Obey robots.txt rules
@@ -25,13 +25,13 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -50,9 +50,38 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'vessels.middlewares.VesselsDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'vessels.middlewares.VesselsDownloaderMiddleware': 543,
+}
+DOWNLOADER_MIDDLEWARES.update({ 
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'scrapy_useragents.downloadermiddlewares.useragents.UserAgentsMiddleware': 500,
+    'rotating_proxies.middlewares.RotatingProxyMiddleware': 800,
+    'rotating_proxies.middlewares.BanDetectionMiddleware': 800,
+})
+
+USER_AGENTS = [
+    ('Mozilla/5.0 (X11; Linux x86_64) '
+     'AppleWebKit/537.36 (KHTML, like Gecko) '
+     'Chrome/57.0.2987.110 '
+     'Safari/537.36'),  # chrome
+    ('Mozilla/5.0 (X11; Linux x86_64) '
+     'AppleWebKit/537.36 (KHTML, like Gecko) '
+     'Chrome/61.0.3163.79 '
+     'Safari/537.36'),  # chrome
+    ('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) '
+     'Gecko/20100101 '
+     'Firefox/55.0')  # firefox
+]
+
+#ROTATING_PROXY_LIST_PATH = 'path/to/.txt'
+
+ROTATING_PROXY_LIST = [
+        '64.235.204.107:3128',
+        '20.81.62.32:3128',
+        '50.114.128.23:3128',
+        '98.12.195.129:443',
+        ]
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
